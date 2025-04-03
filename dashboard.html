@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Metrics Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    
+    <script>
+        function fetchMetrics() {
+            fetch('/metrics')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById("metricsTableBody");
+                tableBody.innerHTML = "";
+                data.forEach(row => {
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${row[0]}</td>
+                                    <td>${row[1]}%</td>
+                                    <td>${row[2]}%</td>
+                                    <td>${row[3]}%</td>
+                                    <td>${(row[4] / 1024 / 1024).toFixed(2)} MB</td>
+                                    <td>${(row[5] / 1024 / 1024).toFixed(2)} MB</td>`;
+                    tableBody.appendChild(tr);
+                });
+            });
+        }
+        setInterval(fetchMetrics, 3000);
+        window.onload = fetchMetrics;
+    </script>
+    
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { margin: 20px auto; border-collapse: collapse; width: 80%; }
+        th, td { padding: 10px; border: 1px solid #ddd; }
+        th { background-color: #333; color: white; }
+    </style>
+</head>
+<body>
+    <h1>System Metrics Dashboard</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>CPU Usage</th>
+                <th>Memory Usage</th>
+                <th>Disk Usage</th>
+                <th>Network Sent</th>
+                <th>Network Received</th>
+            </tr>
+        </thead>
+        <tbody id="metricsTableBody">
+            <!-- Data will be inserted here dynamically -->
+        </tbody>
+    </table>
+</body>
+</html>
